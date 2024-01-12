@@ -21,8 +21,6 @@ int main(int argc, char **argv)
         }
         Die die = Die(faces);
         dice.push_back(die);
-
-        std::cout<<"ut sup"<<endl;
         
     }
     
