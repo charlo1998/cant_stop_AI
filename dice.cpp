@@ -1,5 +1,4 @@
 #include "dice.hpp"
-
 Dice::Dice(){
     this->nDice = 4; //nombre de des lances dans le jeu (toujours 4)
 }
@@ -7,7 +6,8 @@ Dice::Dice(){
 vector<vector<int>> Dice::checkCombinations(vector<int> results){
     vector<vector<int>> combinations;
     for (int i = 1; i < nDice; i++){
-        colonne1 = results[0] + results[i];
+        int colonne2;
+        int colonne1 = results[0] + results[i];
         vector<int> choix;
         if(i == 1){
             colonne2 = results[2]+results[3];
