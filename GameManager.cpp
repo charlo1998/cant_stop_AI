@@ -30,12 +30,18 @@ void GameManager::display(){
     cout << "completed " << score[1] << " tracks" << endl;
 }
 
-void GameManager::advanceCubes(vector<int> tracks){
+void GameManager::advanceCubes(vector<int> tracks, bool currentPLayer){
     //takes a vector of the tracks where we want to advance, and advance the given player in those tracks.
 
+    
     //make temporary progress
     for (auto &track : tracks)
     {
+        if (currentProgress[track] == goalPerTrack[track])
+        {
+            cout << "cannot advance on track " << track << ", player " << currentPLayer << " already completed it." << endl;
+            continue; //jump to next advance action
+        }
         currentProgress[track]++;
     }
     
@@ -64,11 +70,7 @@ void GameManager::findMoves(vector<int> diceCombinations, bool currentPLayer){
     for (auto &move : diceCombinations)
     {
         //validate this move is legal.
-        if (currentProgress[track] == goalPerTrack[track])
-        {
-            cout << "cannot advance on track " << track << ", player " << currentPLayer << " already completed it." << endl;
-            continue; //jump to next advance action
-        }
+
     }
     
 }
