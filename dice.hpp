@@ -3,13 +3,17 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstdlib>  //to re-seed rand()
 
 using namespace std;
 
 class Dice {
 public:
     Dice();
-    vector<vector<int>> checkCombinations(vector<int> results);
     int nDice;
+    vector<int> dice;
     ~Dice(){};
+    void roll();
+    vector<vector<int>> checkCombinations();
+    string toString();
 };
