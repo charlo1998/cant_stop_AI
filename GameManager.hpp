@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,13 +13,15 @@ public:
     vector<int> firstPlayerTracks;
     vector<int> secondPlayerTracks;
     vector<int> currentProgress;
+    bool currentPLayer;
     vector<int> goalPerTrack;
     vector<int> score;
 
     GameManager();
     void display();
     ~GameManager(){};
-    void advanceCubes(vector<int> tracks, bool currentPLayer);
-    void saveProgress(bool currentPLayer);
-    void findMoves(vector<int> diceCombinations, bool currentPLayer);
+    vector<int> canAdvanceCubes(vector<int> tracks);
+    void saveProgress();
+    vector<vector<int>> findMoves(vector<vector<int>> diceCombinations);
+    void playTurn(vector<vector<int>> diceCombinations);
 };
