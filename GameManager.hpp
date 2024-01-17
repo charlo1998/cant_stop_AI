@@ -18,7 +18,7 @@ public:
     GameManager();
     void display();
     ~GameManager(){};
-    void advanceCubes(vector<int> tracks, bool currentPLayer);
+    vector<int> canAdvanceCubes(vector<int> tracks, bool currentPLayer);
     void saveProgress(bool currentPLayer);
-    void findMoves(vector<int> diceCombinations, bool currentPLayer);
+    vector<vector<int>> findMoves(vector<vector<int>> diceCombinations, bool currentPLayer);
 };
