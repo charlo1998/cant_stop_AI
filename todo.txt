@@ -1,0 +1,6 @@
+things todo:
+
+1. test the game manager further.
+2. use the dice class to test the game manager with real rolls.
+3. complete saveprogress() to also update the score when completing a column
+4. end the game when a player wins.
