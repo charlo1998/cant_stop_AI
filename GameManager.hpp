@@ -20,7 +20,7 @@ public:
     GameManager();
     void display();
     ~GameManager(){};
-    vector<int> canAdvanceCubes(vector<int> tracks);
+    vector<vector<int>> canAdvanceCubes(vector<int> tracks);
     void saveProgress();
     vector<vector<int>> findMoves(vector<vector<int>> diceCombinations);
     void playTurn(vector<vector<int>> diceCombinations);

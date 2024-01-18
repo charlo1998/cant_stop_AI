@@ -40,11 +40,12 @@ void GameManager::display(){
     
 }
 
-vector<int> GameManager::canAdvanceCubes(vector<int> tracks){
+vector<vector<int>> GameManager::canAdvanceCubes(vector<int> tracks){
     //takes a vector of the tracks where we want to advance, and advance the given player in those tracks.
 
-    vector<int> advancedtracks;
+    vector<vector<int>> advancedtracks;
     //select the correct tracks according to the current player
+    vector<int> tempProgress = currentProgress;
     vector<int> currentPlayerTracks;
     vector<int> otherPlayerTracks;
     if (currentPLayer == 0)
@@ -61,54 +62,72 @@ vector<int> GameManager::canAdvanceCubes(vector<int> tracks){
     vector<int> progressColumns;
     for (size_t i = 0; i < goalPerTrack.size(); i++)
     {
-        if (currentProgress[i] > currentPlayerTracks[i])
+        if (tempProgress[i] > currentPlayerTracks[i])
         {
             progressColumns.push_back(i+2);
         }
-        
     }
     
-    
     //validate we can make temporary progress
-    for (auto &track : tracks)
+    int isDuplicate = (tracks[0] == tracks[1]) ? 1 : 0;
+    bool canAdvanceBoth = true;
+    int addedTracks = 0;
+    for (auto track : tracks)
     {
         track = track-2; //convert to internal representation
         if (currentPlayerTracks[track] == goalPerTrack[track])
         {
             cout << "cannot advance on track " << track+2 << ", player " << currentPLayer << " already completed it." << endl;
+            canAdvanceBoth = false;
             continue; //jump to next advance action
         }
-        else if (currentProgress[track] == goalPerTrack[track])
+        else if (tempProgress[track] == goalPerTrack[track])
         {
             cout << "cannot advance on track " << track+2 << ", current progress already reached the end." << endl;
+            canAdvanceBoth = false;
             continue; //jump to next advance action
-        } else if (otherPlayerTracks[track] == goalPerTrack[track])
+        } else if (tempProgress[track] == goalPerTrack[track])
         {
             cout << "cannot advance on track " << track+2 << ", player " << 1-currentPLayer << " already completed it." << endl;
+            canAdvanceBoth = false;
             continue; //jump to next advance action
         }
         
         std::vector<int>::iterator it;
-        it = find(progressColumns.begin(), progressColumns.end(), track);
+        it = find(progressColumns.begin(), progressColumns.end(), track+2);
         
         if (it == progressColumns.end()) //didn't find track in the current tracks we are progressing in, check if we can add it.
         {
             if (progressColumns.size() == 3)
             {
                 cout << "cannot advance on track " << track+2 << ", already making progress on 3 columns." << endl;
+                canAdvanceBoth = false;
                 continue;
+            } else {
+                addedTracks++;
             }
         }
+        advancedtracks.push_back({track+2});
+        tempProgress[track]++; 
+    }
+
+    if (advancedtracks.size() == 2) // check if we are able to advance in the 2 tracks.
+    {
+        if (progressColumns.size() + addedTracks <= 3 + 1*isDuplicate)
+        {
+            advancedtracks = {tracks}; //force to move simultaneously in the 2 tracks
+        }
         
-        advancedtracks.push_back(track+2);
         
     }
+    
+    
     
     if (advancedtracks.size() != 0)
     {
         return advancedtracks;
     } else {
-        return {0};
+        return {{0}};
     }
     
 }
@@ -133,13 +152,18 @@ vector<vector<int>> GameManager::findMoves(vector<vector<int>> diceCombinations)
     //Say tracks 5 and 4 are completed. findMoves will return {{3,7}, {6}}. In case of no legal move, will return {0}.
 
     vector<vector<int>> legalMoves;
-    for (auto &move : diceCombinations)
+    for (auto &combination : diceCombinations)
     {
         //validate this move is legal.
-        vector<int> outcome = canAdvanceCubes(move);
-        if (outcome[0] != 0)
+        vector<vector<int>> moves = canAdvanceCubes(combination);
+        if (moves[0][0] != 0)
         {
-            legalMoves.push_back(outcome);
+            for (size_t i = 0; i < moves.size(); i++)
+            {
+                legalMoves.push_back(moves[i]);
+            }
+            
+            
         }
         
     }
@@ -169,7 +193,6 @@ void GameManager::playTurn(vector<vector<int>> diceCombinations){
         return;
     }
 
-    cout << "move 0: stop and save progress." << endl;
     
     for (size_t i = 0; i < legalMoves.size(); i++)
     {
@@ -181,13 +204,10 @@ void GameManager::playTurn(vector<vector<int>> diceCombinations){
         cout << endl;
     }
 
-    
-
     bool validAction = false;
     int action;
     while (validAction == false)
     {
-        int action;
         cout << "please input the number corresponding to the wanted action." << endl;
         cin >> action;
         if (cin.fail())
@@ -195,7 +215,7 @@ void GameManager::playTurn(vector<vector<int>> diceCombinations){
             cout << "not a valid move!" << endl;
             cin.clear();
             cin.ignore(256,'\n');
-        } else if (action > legalMoves.size())
+        } else if (action > legalMoves.size() || action < 1)
         {
             cout << "not a valid move!" << endl;
         } else {
@@ -203,19 +223,36 @@ void GameManager::playTurn(vector<vector<int>> diceCombinations){
         }
     }
     
-    
+    for (size_t i = 0; i < legalMoves[action-1].size(); i++)
+    {
+        int track = legalMoves[action-1][i];
+        currentProgress[track-2]++;
+        cout << "progressed in track " << track << endl;
+    }
+        
+    cout << "Do you want to stop? Press 1 to stop, 0 to continue." << endl;
+    validAction = false;
+    action = -1;
+    while (validAction == false)
+    {
+        cin >> action;
+        if (cin.fail())
+        {
+            cout << "not a valid move!" << endl;
+            cin.clear();
+            cin.ignore(256,'\n');
+        } else if (action > 1 || action < 0)
+        {
+            cout << "not a valid move!" << endl;
+        } else {
+            validAction = true;
+        }
+    }
 
-    if (action==0)
+    if (action==1)
     {
         saveProgress();
         currentPLayer = 1 - currentPLayer;
-    } else {
-        for (size_t i = 0; i < legalMoves[action].size(); i++)
-        {
-            currentProgress[i]++;
-            cout << "progressed in track " << i+2 << endl;
-        }
-        
     }
 
 }
