@@ -16,4 +16,5 @@ public:
     void roll();
     vector<vector<int>> checkCombinations();
     string toString();
+    void display();
 };

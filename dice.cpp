@@ -25,6 +25,14 @@ void Dice::roll(){
     }
 }
 
+void Dice::display(){
+    cout << "rolled: ";
+    for(int i = 0; i < 4; i++){
+        cout << dice[i] << " "; 
+    }
+    cout << endl;
+}
+
 /**
  * Checks dice results and returns possible combinations of dice for column advance
  * 
