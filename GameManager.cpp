@@ -137,9 +137,27 @@ void GameManager::saveProgress(){
     if (currentPLayer == 0)
     {
         firstPlayerTracks = currentProgress;
+        for (size_t i = 0; i < firstPlayerTracks.size(); i++)
+        {
+            if (firstPlayerTracks[i] == goalPerTrack[i])
+            {
+                firstPlayerTracks[i]++; //put it outside of bounds so we don't add it to score multiple times
+                score[0] += 1;
+            }
+            
+        }
         currentProgress = secondPlayerTracks; 
     } else {
         secondPlayerTracks = currentProgress;
+        for (size_t i = 0; i < secondPlayerTracks.size(); i++)
+        {
+            if (secondPlayerTracks[i] == goalPerTrack[i])
+            {
+                secondPlayerTracks[i]++; //put it outside of bounds so we don't add it to score multiple times
+                score[1] += 1;
+            }
+            
+        }
         currentProgress = firstPlayerTracks;
     }
     
@@ -251,7 +269,7 @@ void GameManager::playTurn(vector<vector<int>> diceCombinations){
 
     if (action==1)
     {
-        saveProgress();
+        saveProgress();        
         currentPLayer = 1 - currentPLayer;
     }
 

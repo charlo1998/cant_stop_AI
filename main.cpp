@@ -20,6 +20,11 @@ int main(int argc, char **argv)
         diceCombinations = dice.checkCombinations();
         cantStop.playTurn(diceCombinations);
         cantStop.display();
+        if (cantStop.score[cantStop.currentPLayer] == 3)
+        {
+            cout << "Player " << cantStop.currentPLayer << " Won!" << endl;
+            break;
+        }
     }
     
     
