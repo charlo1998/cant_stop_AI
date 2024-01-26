@@ -75,18 +75,18 @@ vector<vector<int>> GameManager::canAdvanceCubes(vector<int> tracks){
     for (auto track : tracks)
     {
         track = track-2; //convert to internal representation
-        if (currentPlayerTracks[track] == goalPerTrack[track])
+        if (currentPlayerTracks[track] >= goalPerTrack[track])
         {
             cout << "cannot advance on track " << track+2 << ", player " << currentPLayer << " already completed it." << endl;
             canAdvanceBoth = false;
             continue; //jump to next advance action
         }
-        else if (tempProgress[track] == goalPerTrack[track])
+        else if (tempProgress[track] >= goalPerTrack[track])
         {
             cout << "cannot advance on track " << track+2 << ", current progress already reached the end." << endl;
             canAdvanceBoth = false;
             continue; //jump to next advance action
-        } else if (tempProgress[track] == goalPerTrack[track])
+        } else if (otherPlayerTracks[track] >= goalPerTrack[track])
         {
             cout << "cannot advance on track " << track+2 << ", player " << 1-currentPLayer << " already completed it." << endl;
             canAdvanceBoth = false;
@@ -141,7 +141,7 @@ void GameManager::saveProgress(){
         {
             if (firstPlayerTracks[i] == goalPerTrack[i])
             {
-                firstPlayerTracks[i]++; //put it outside of bounds so we don't add it to score multiple times
+                firstPlayerTracks[i] = 99; //put it outside of bounds so we don't add it to score multiple times
                 score[0] += 1;
             }
             
@@ -153,7 +153,7 @@ void GameManager::saveProgress(){
         {
             if (secondPlayerTracks[i] == goalPerTrack[i])
             {
-                secondPlayerTracks[i]++; //put it outside of bounds so we don't add it to score multiple times
+                secondPlayerTracks[i] = 99; //put it outside of bounds so we don't add it to score multiple times
                 score[1] += 1;
             }
             
@@ -247,6 +247,13 @@ void GameManager::playTurn(vector<vector<int>> diceCombinations){
         currentProgress[track-2]++;
         cout << "progressed in track " << track << endl;
     }
+
+    cout << "current progress: ";
+    for (size_t i = 0; i < secondPlayerTracks.size(); i++)
+    {
+        cout << currentProgress[i] << " ";
+    }
+    cout << endl;
         
     cout << "Do you want to stop? Press 1 to stop, 0 to continue." << endl;
     validAction = false;
